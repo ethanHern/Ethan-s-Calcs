@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import LinkBox from "./LinkBox";
 
 export default function Navbar() {
@@ -13,7 +13,7 @@ export default function Navbar() {
             {/* Matrix Dropdown */}
             <div className="relative">
                 <div className={`flex items-center hover:inset-shadow-md overflow-hidden ${matrixIsOpen ? 'rounded-t-sm inset-shadow-md bg-gray-200' : 'rounded-sm'}`}>
-                    <div className="border-r-2 border-gray-100 p-1 hover:bg-gray-200 hover:inset-shadow-sm">Matrix Calculators</div>
+                    <LinkBox description={"Matrix Calculators"} link={'/matrix-calculator'} name="Matrix Calculators" className="border-r-2 border-gray-100 p-1 hover:bg-gray-200 hover:inset-shadow-sm"/>
                     <div className="py-1 px-1 hover:bg-gray-200 hover:inset-shadow-sm" onClick={toggleMatrixDropdownOpen}>▼</div>
                 </div>
                 {matrixIsOpen && (
