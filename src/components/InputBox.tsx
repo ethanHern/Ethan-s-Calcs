@@ -2,6 +2,7 @@ import { AddColumn, AddRow, GetMatrixColumns, GetMatrixRows, type Matrix, Remove
 import { type SetStateAction } from "react";
 import Brace from "./Brace";
 import { ReadCSV } from "../utils/csv_ops";
+import Button from "./Button";
 
 type InputProps = {
     variant: "default" | "square",
@@ -22,40 +23,28 @@ export default function InputBox({variant, matrix, matrixName, setMatrixFunction
         {/* Row Buttons */}
         <div id={`Rows-${matrixName}`} className="flex gap-1">
           <p>Rows:</p>
-          <button onClick={()=> {
-            setMatrixFunction(RemoveRow(matrix));
-          }}>
-            <div className="bg-red-500 px-4 rounded-xl font-bold hover:cursor-pointer hover:inset-shadow-md hover:bg-red-600 active:bg-red-700">
-              -
-            </div>
-          </button>
+          <Button
+            color="red" name="-" additional_styling="px-4 font-bold"
+            onClick={()=>{setMatrixFunction(RemoveRow(matrix));}}
+          />
           {GetMatrixRows(matrix)}
-          <button onClick={()=> {
-            setMatrixFunction(AddRow(matrix));
-            }}>
-            <div className="bg-green-500 px-4 rounded-xl font-bold hover:cursor-pointer hover:inset-shadow-md hover:bg-green-600 active:bg-green-700">
-              +
-            </div>
-          </button>
+          <Button
+            color="green" name="+" additional_styling="px-4 font-bold"
+            onClick={()=> {setMatrixFunction(AddRow(matrix));}}
+          />
         </div>
         {/* Column Buttons */}
         <div id={`Columns-${matrixName}`} className="flex gap-1">
           <p>Columns:</p>
-          <button onClick={()=> {
-            setMatrixFunction(RemoveColumn(matrix));
-          }}>
-            <div className="bg-red-500 px-4 rounded-xl font-bold hover:cursor-pointer hover:inset-shadow-md hover:bg-red-600 active:bg-red-700">
-              -
-            </div>
-          </button>
+          <Button 
+            color="red" name="-" additional_styling="px-4 font-bold"
+            onClick={()=> {setMatrixFunction(RemoveColumn(matrix));}}
+            />
           {GetMatrixColumns(matrix)}
-          <button onClick={()=> {
-            setMatrixFunction(AddColumn(matrix));
-            }}>
-            <div className="bg-green-500 px-4 rounded-xl font-bold hover:cursor-pointer hover:inset-shadow-md hover:bg-green-600 active:bg-green-700">
-              +
-            </div>
-          </button>
+          <Button
+            color="green" name="+" additional_styling="px-4 font-bold"
+            onClick={()=> {setMatrixFunction(AddColumn(matrix));}}
+          />
         </div>
       </div>
       }
@@ -63,25 +52,21 @@ export default function InputBox({variant, matrix, matrixName, setMatrixFunction
       <div id={`Buttons-${matrixName}`} className="flex gap-2 justify-center">
         <div id={`Size-${matrixName}`} className="flex gap-1">
           <p>Size:</p>
-          <button onClick={()=> {
+          <Button
+            color={"red"} name="-" additional_styling="px-4 font-bold"
+            onClick={()=> {
             let a = RemoveRow(matrix);
             a = RemoveColumn(a);
-            setMatrixFunction(a);
-          }}>
-            <div className="bg-red-500 px-4 rounded-xl font-bold hover:cursor-pointer hover:inset-shadow-md hover:bg-red-600 active:bg-red-700">
-              -
-            </div>
-          </button>
+            setMatrixFunction(a);}}
+          />
           {GetMatrixRows(matrix)}
-          <button onClick={()=> {
-            let a = AddRow(matrix);
-            a = AddColumn(a);
-            setMatrixFunction(a);
-            }}>
-            <div className="bg-green-500 px-4 rounded-xl font-bold hover:cursor-pointer hover:inset-shadow-md hover:bg-green-600 active:bg-green-700">
-              +
-            </div>
-          </button>
+          <Button
+            color="green" name="+" additional_styling="px-4 font-bold"
+            onClick={()=> {
+              let a = AddRow(matrix);
+              a = AddColumn(a);
+              setMatrixFunction(a);}}
+            />
         </div>
       </div>
       }
@@ -106,7 +91,7 @@ export default function InputBox({variant, matrix, matrixName, setMatrixFunction
         <Brace matrixName={matrixName} side="right" />
       </div>
 
-      {/* The Clear button */}
+      {/* The Additional Settings */}
       <div className="flex-row justify-self-center gap-2">
         <input id={`${matrixName}-input`} type='file' accept=".csv, .txt" hidden={true} multiple={false} onChange={(event)=>{
           const file = event.target.files;

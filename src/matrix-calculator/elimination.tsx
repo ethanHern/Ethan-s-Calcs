@@ -1,8 +1,9 @@
-import InputBox from "@/components/InputBox";
-import OutputBox from "@/components/OutputBox";
-import { GaussianElimination, GaussJordanElimination } from "@/utils/advanced-operations";
-import { GetMatrixColumns, GetMatrixRows, Matrix } from "@/utils/elementary-operations";
 import { useState } from "react";
+import { GetMatrixColumns, GetMatrixRows, type Matrix } from "../utils/matrix";
+import InputBox from "../components/InputBox";
+import { GaussianElimination, GaussJordanElimination } from "../utils/matrix-operations";
+import OutputBox from "../components/OutputBox";
+import { Helmet } from "react-helmet-async";
 
 export default function Elimination() {
   const [A, setA] = useState<Matrix>([[0, 0], [0, 0]]);
@@ -20,8 +21,12 @@ export default function Elimination() {
     setOutput(undefined);
     setEliminationSteps(undefined);
   }
+  
     return (
         <div className="mt-2 flex-col">
+          <Helmet>
+            <title>Matrix Calculator - Elimination | Ethan's Calcs</title>
+          </Helmet>
 
           {/* The container for the mode switcher button */}
           <div className="grid grid-cols-2 w-fit justify-self-center overflow-hidden rounded-2xl bg-red-400 border-2 border-black">

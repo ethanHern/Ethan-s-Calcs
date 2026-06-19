@@ -8,13 +8,20 @@ export default function Navbar() {
 
     return (
         <nav className="flex items-center py-3 px-2 gap-x-2 shadow-sm">
-            <LinkBox description="A normal calculator" link={'/calculator'} name='Calculator' rounded={true} />
+            <LinkBox
+                description="A normal calculator" link={'/calculator'}
+                name='Calculator' rounded={true}
+                />
             |
             {/* Matrix Dropdown */}
             <div className="relative">
-                <div className={`flex items-center hover:inset-shadow-md overflow-hidden ${matrixIsOpen ? 'rounded-t-sm inset-shadow-md bg-gray-200' : 'rounded-sm'}`}>
-                    <LinkBox description={"Matrix Calculators"} link={'/matrix-calculator'} name="Matrix Calculators" className="border-r-2 border-gray-100 p-1 hover:bg-gray-200 hover:inset-shadow-sm"/>
-                    <div className="py-1 px-1 hover:bg-gray-200 hover:inset-shadow-sm" onClick={toggleMatrixDropdownOpen}>▼</div>
+                <div className={`flex items-center overflow-hidden ${matrixIsOpen ? 'rounded-t-sm inset-shadow-md' : 'rounded-sm'}`}>
+                    <LinkBox
+                        description={"Matrix Calculators"} link={'/matrix-calculator'}
+                        name="Matrix Calculators"
+                        className="border-r-2 border-gray-100 p-1"
+                    />
+                    <div className={`py-1 px-1 hover:bg-gray-200 active:bg-gray-300 hover:inset-shadow-md hover:cursor-pointer ${matrixIsOpen && 'bg-gray-200 inset-shadow-md'}`} onClick={toggleMatrixDropdownOpen}>▼</div>
                 </div>
                 {matrixIsOpen && (
                     <div className="absolute w-full block bg-white rounded-b-sm border-r border-l border-b border-gray-400">

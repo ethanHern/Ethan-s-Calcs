@@ -12,7 +12,13 @@ export default function LinkBox({description, link, name, rounded, className}: L
 
     return (
         <div className="flex">
-            <Link title={description} to={link} className={`${rounded && 'rounded-md'} ${className ? `${className} ` : `grow hover:inset-shadow-md hover:text-shadow-sm p-1`}`}>{name}</Link>
+            <Link title={description} to={link} 
+                className={`hover:bg-gray-200 active:bg-gray-300 hover:inset-shadow-md hover:text-shadow-sm ${rounded && 'rounded-md'}
+                    ${className ?
+                    `${className} ` :
+                    `grow p-1`}`}>
+            {name}
+            </Link>
         </div>
     )
 }

@@ -1,8 +1,9 @@
-import InputBox from "@/components/InputBox";
-import OutputBox from "@/components/OutputBox";
-import { GetMatrixColumns, GetMatrixRows, Matrix, MultiplyMatrices } from "@/utils/elementary-operations";
-import Head from "next/head";
 import { useState } from "react";
+import { GetMatrixColumns, GetMatrixRows, type Matrix } from "../utils/matrix";
+import InputBox from "../components/InputBox";
+import { MultiplyMatrices } from "../utils/matrix-operations";
+import OutputBox from "../components/OutputBox";
+import { Helmet } from "react-helmet-async";
 
 
 export default function Multiplication() {
@@ -13,10 +14,9 @@ export default function Multiplication() {
 
   return (
     <div className="mt-2 flex-col">
-      <Head>
-        <title>Matrix Calculator- Multiplication</title>
-        
-      </Head>
+      <Helmet>
+        <title>Matrix Calculator - Multiplication | Ethan's Calcs</title>
+      </Helmet>
       <h1 className="font-extrabold text-4xl text-center">Matrix Multiplication</h1>
       <h3 className="text-center mb-3">Multiply a matrix A by another matrix B</h3>
 

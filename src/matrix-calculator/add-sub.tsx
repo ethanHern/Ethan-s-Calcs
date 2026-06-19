@@ -3,6 +3,7 @@ import OutputBox from "../components/OutputBox";
 import { GetMatrixColumns, GetMatrixRows, type Matrix } from "../utils/matrix";
 import { useState } from "react";
 import { AddMatrices, SubtractMatrices } from "../utils/matrix-operations";
+import { Helmet } from "react-helmet-async";
 
 export default function AddSub() {
   const [A, setA] = useState<Matrix>([[0, 0], [0, 0]]);
@@ -16,6 +17,9 @@ export default function AddSub() {
   }
     return (
         <div className="mt-2 flex-col">
+            <Helmet>
+                <title>Matrix Calculator - Add/Sub | Ethan's Calcs</title>
+            </Helmet>
             {/* The container for the mode switcher button */}
             <div className="grid grid-cols-2 w-fit justify-self-center overflow-hidden rounded-2xl bg-red-400 border-2 border-black">
                 <button onClick={()=>{

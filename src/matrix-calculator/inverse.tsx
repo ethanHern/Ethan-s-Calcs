@@ -1,8 +1,9 @@
-import InputBox from "@/components/InputBox";
-import OutputBox from "@/components/OutputBox";
-import { InvertMatrix } from "@/utils/advanced-operations";
-import { GetMatrixColumns, GetMatrixRows, Matrix } from "@/utils/elementary-operations";
 import { useState } from "react";
+import { GetMatrixColumns, GetMatrixRows, type Matrix } from "../utils/matrix";
+import InputBox from "../components/InputBox";
+import { InvertMatrix } from "../utils/matrix-operations";
+import OutputBox from "../components/OutputBox";
+import { Helmet } from "react-helmet-async";
 
 export default function Inverse() {
   const [A, setA] = useState<Matrix>([[0, 0], [0, 0]]);
@@ -14,6 +15,9 @@ export default function Inverse() {
 
     return (
         <div className="mt-2 flex-col">
+          <Helmet>
+            <title>Matrix Calculator - Inverse | Ethan's Calcs</title>
+          </Helmet>
           <h1 className="font-extrabold text-4xl text-center">Inverse Matrix</h1>
           <h3 className="text-center mb-3">Invert a Square Matrix</h3>
 
