@@ -4,6 +4,7 @@ import { GetMatrixColumns, GetMatrixRows, type Matrix } from "../utils/matrix";
 import { useState } from "react";
 import { AddMatrices, SubtractMatrices } from "../utils/matrix-operations";
 import { Helmet } from "react-helmet-async";
+import Button from "../components/Button";
 
 export default function AddSub() {
   const [A, setA] = useState<Matrix>([[0, 0], [0, 0]]);
@@ -21,7 +22,7 @@ export default function AddSub() {
                 <title>Matrix Calculator - Add/Sub | Ethan's Calcs</title>
             </Helmet>
             {/* The container for the mode switcher button */}
-            <div className="grid grid-cols-2 w-fit justify-self-center overflow-hidden rounded-2xl bg-red-400 border-2 border-black">
+            <div className="grid grid-cols-2 w-fit justify-self-center overflow-hidden rounded-2xl border-2 border-black">
                 <button onClick={()=>{
                     setMode(false);
                     clearSteps();
@@ -48,10 +49,9 @@ export default function AddSub() {
                 <InputBox variant="default" matrix={A} matrixName={"A"} setMatrixFunction={setA}/>
 
                 {/*The swap button*/}
-                <button onClick={()=>{setA(B); setB(A);}}>
-                <div className="bg-gray-300 rounded-xl p-3 hover:inset-shadow-md hover:cursor-pointer hover:bg-gray-400">Swap</div>
-                </button>
-
+                <Button 
+                    color="gray_light" name="Swap" additional_styling="p-3"
+                    onClick={()=>{setA(B); setB(A);}}/>
                 {/*Input B*/}
                 <InputBox variant="default" matrix={B} matrixName={"B"} setMatrixFunction={setB}/>
             </div>

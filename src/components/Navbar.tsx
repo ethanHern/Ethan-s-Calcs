@@ -1,5 +1,8 @@
 import { useState } from "react";
 import LinkBox from "./LinkBox";
+import { Link } from "react-router-dom";
+import logo from "../assets/Ethan's Calcs Logo.png";
+
 
 export default function Navbar() {
     const[matrixIsOpen, setMatrixIsOpen] = useState(false);
@@ -8,6 +11,11 @@ export default function Navbar() {
 
     return (
         <nav className="flex items-center py-3 px-2 gap-x-2 shadow-sm">
+            <div className='hover:cursor-pointer active:cursor-progress pl-2 pr-3 py-1'>
+                <Link title='Home' to={'/'}>
+                    <img src={logo} alt={"Ethan's\n Calcs"} width={93} height={45}/>
+                </Link>
+            </div>
             <LinkBox
                 description="A normal calculator" link={'/calculator'}
                 name='Calculator' rounded={true}

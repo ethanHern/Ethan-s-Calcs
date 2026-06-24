@@ -34,13 +34,13 @@ export default function Elimination() {
               setEliminationMode(false);
               clearSteps();
             }}>
-              <div className={`grow-1 p-1 px-2 ${!eliminationMode ? "bg-gray-700 text-white" : "bg-white text-black hover:cursor-pointer hover:inset-shadow-md"}`}>Gaussian</div>
+              <div className={`grow p-1 px-2 ${!eliminationMode ? "bg-gray-700 text-white" : "bg-white text-black hover:cursor-pointer hover:inset-shadow-md"}`}>Gaussian</div>
             </button>
             <button onClick={()=>{
               setEliminationMode(true);
               clearSteps();
             }}>
-              <div className={`grow-1 p-1 px-2 ${eliminationMode ? "bg-gray-700 text-white": "bg-white text-black hover:cursor-pointer hover:inset-shadow-md"}`}>Gauss-Jordan</div>
+              <div className={`grow p-1 px-2 ${eliminationMode ? "bg-gray-700 text-white": "bg-white text-black hover:cursor-pointer hover:inset-shadow-md"}`}>Gauss-Jordan</div>
             </button>
           </div>
 

@@ -192,3 +192,7 @@ export function InvertMatrix(matrix: Matrix): InverseData {
         failed: false
     };
 }
+
+export function GramSchmidt(matrix: Matrix) {
+    return 1;
+}

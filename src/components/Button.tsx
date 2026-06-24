@@ -2,7 +2,7 @@ import type { MouseEventHandler } from "react"
 
 
 type ButtonProps = {
-    color: "green" | "red" | "gray" | "black",
+    color: "green" | "red" | "gray" | "gray_light" | "black",
     additional_styling?: string,
     onClick: MouseEventHandler<HTMLButtonElement>,
     name: string
@@ -12,6 +12,7 @@ const colorStyles: Record<ButtonProps["color"], string> = {
     green: "bg-green-500 hover:bg-green-600 active:bg-green-700",
     red: "bg-red-500 hover:bg-red-600 active:bg-red-700",
     gray: "bg-gray-500 hover:bg-gray-600 active:bg-gray-700",
+    gray_light: "bg-gray-300 hover:bg-gray-400 active:bg-gray-500",
     black: "bg-black text-white active:bg-gray-800"
 };
 
