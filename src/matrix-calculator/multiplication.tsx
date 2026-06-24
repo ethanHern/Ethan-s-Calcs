@@ -23,7 +23,7 @@ export default function Multiplication() {
       {/*The container for the input matrices*/}
       <div className="flex px-16 min-w-screen">
         {/*Input A*/}
-        <InputBox variant="default" matrix={A} matrixName={"A"} setMatrixFunction={setA}/>
+        <InputBox variant="default" matrix={{name: "A", matrix: A}} setMatrixFunction={setA}/>
 
         {/*The swap button*/}
         <button onClick={()=>{setA(B); setB(A);}}>
@@ -31,7 +31,7 @@ export default function Multiplication() {
         </button>
 
         {/*Input B*/}
-        <InputBox variant="default" matrix={B} matrixName={"B"} setMatrixFunction={setB}/>
+        <InputBox variant="default" matrix={{name: "B", matrix: B}} setMatrixFunction={setB}/>
       </div>
 
       {/*The container for the output*/}

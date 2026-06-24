@@ -21,6 +21,19 @@ type InverseData = {
     failed: boolean
 }
 
+export type MatrixData = {
+    name: string,
+    matrix: Matrix
+}
+
+export type MatrixOutputData = {
+    result: MatrixData,
+    failed?: {
+        failure_message: string
+    }
+
+}
+
 /**
  * Takes in two matrices and performs standard matrix multiplication.
  * The number of columns in A must match the number of rows in B.

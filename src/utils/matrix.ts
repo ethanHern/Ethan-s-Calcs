@@ -2,7 +2,7 @@
 export type Matrix = number[][];
 export type StringMatrix = string[][];
 
-export class MatrixData {
+export class MatrixDataObj {
     name: string;
     rows: number = 2;
     cols: number = 2;

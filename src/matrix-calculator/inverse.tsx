@@ -22,7 +22,7 @@ export default function Inverse() {
           <h3 className="text-center mb-3">Invert a Square Matrix</h3>
 
           {/*The input matrix*/}
-          <InputBox variant={"square"} matrix={A} matrixName="A" setMatrixFunction={setA} />
+          <InputBox variant={"square"} matrix={{name: "A", matrix: A}} setMatrixFunction={setA} />
 
           {/*The container for the output*/}
           <div className="flex flex-col items-center">

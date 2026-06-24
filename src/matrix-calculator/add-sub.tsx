@@ -46,14 +46,14 @@ export default function AddSub() {
             {/*The container for the input matrices*/}
             <div className="flex px-16 min-w-screen">
                 {/*Input A*/}
-                <InputBox variant="default" matrix={A} matrixName={"A"} setMatrixFunction={setA}/>
+                <InputBox variant="default" matrix={{name: "A", matrix: A}} setMatrixFunction={setA}/>
 
                 {/*The swap button*/}
                 <Button 
                     color="gray_light" name="Swap" additional_styling="p-3"
                     onClick={()=>{setA(B); setB(A);}}/>
                 {/*Input B*/}
-                <InputBox variant="default" matrix={B} matrixName={"B"} setMatrixFunction={setB}/>
+                <InputBox variant="default" matrix={{name: "B", matrix: B}} setMatrixFunction={setB}/>
             </div>
 
             {/*The container for the output*/}
