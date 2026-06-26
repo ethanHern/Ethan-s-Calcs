@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { GetMatrixColumns, GetMatrixRows, type Matrix } from "../utils/matrix";
+import { type Matrix } from "../utils/matrix";
 import InputBox from "../components/InputBox";
-import { MultiplyMatrices } from "../utils/matrix-operations";
-import OutputBox from "../components/OutputBox";
+import { MultiplyMatrices, type MatrixOutputData } from "../utils/matrix-operations";
 import { Helmet } from "react-helmet-async";
+import Button from "../components/Button";
+import MatrixOutputArea from "../components/MatrixOutputArea";
 
 
 export default function Multiplication() {
   const [A, setA] = useState<Matrix>([[0, 0], [0, 0]]);
   const [B, setB] = useState<Matrix>([[0, 0], [0, 0]]);
-  const [output, setOutput] = useState<Matrix>();
-  const [multPossible, setMultPossible] = useState<boolean>(true);
+  const [output, setOutput] = useState<MatrixOutputData>();
+
+  const clearOutput = () => {
+    setOutput(undefined);
+  }
 
   return (
     <div className="mt-2 flex-col">
@@ -37,25 +41,13 @@ export default function Multiplication() {
       {/*The container for the output*/}
       <div className="flex flex-col items-center">
         {/*The Set button*/}
-        <button onClick={()=> {
-          if (GetMatrixColumns(A) == GetMatrixRows(B)) {
-            setOutput(MultiplyMatrices(A, B));
-            setMultPossible(true);
-          }
-          else {
-            setMultPossible(false);
-          }
-        }}>
-          <div className="bg-orange-500 p-3 rounded-xl hover:cursor-pointer hover:inset-shadow-md hover:bg-orange-600 active:bg-orange-700">
-            Set
-          </div>
-        </button>
-
-        {/*This element only displays when the matrices are not eligible for multiplication*/}
-        {!multPossible && <p className="text-red-500">The number of columns in A must match the number of rows in B!</p>}
-
-        {/*The output matrix*/}
-        {output && <OutputBox rows={GetMatrixRows(output)} columns={GetMatrixColumns(output)} output={output} matrixName="Output" showName={false}/>}
+        <Button color="orange" name="Multiply"
+        onClick={()=> {
+          let data = MultiplyMatrices(A, B);
+          setOutput(data);
+          if (data.failed) {clearOutput}
+        }}/>
+        {output && <MatrixOutputArea output_data={output}/>}
       </div>
     </div>
   )

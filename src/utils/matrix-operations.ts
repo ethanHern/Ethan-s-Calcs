@@ -1,36 +1,20 @@
 import { CreateBlockMatrix, CreateIdentity, GetMatrixColumns, GetMatrixRows, SwapRows, type Matrix } from "./matrix";
 
-type GaussElimData = {
-    result_matrix: Matrix,
-    failed: boolean,
-    elimination_steps?: Matrix[],
-
-}
-
-type GaussJordanData = {
-    ref_form: Matrix,
-    normalized_form?: Matrix,
-    result?: Matrix,
-    failed: boolean,
-}
-
-type InverseData = {
-    block_matrix: Matrix,
-    gauss_jordan_form: Matrix,
-    result?: Matrix,
-    failed: boolean
-}
-
 export type MatrixData = {
     name: string,
+    size?: {
+        rows: number,
+        cols: number
+    },
     matrix: Matrix
 }
 
 export type MatrixOutputData = {
-    result: MatrixData,
+    result: MatrixData[],
     failed?: {
         failure_message: string
-    }
+    },
+    steps?: MatrixData[]
 
 }
 
@@ -42,7 +26,16 @@ export type MatrixOutputData = {
  * @param B The matrix on the right of the multiplication
  * @returns The resulting matrix with the same number of columns as B has, and the same number of rows as A has.
  */
-export function MultiplyMatrices(A: Matrix, B: Matrix): Matrix {
+export function MultiplyMatrices(A: Matrix, B: Matrix): MatrixOutputData {
+    if (GetMatrixColumns(A) != GetMatrixRows(B)) {
+        return {
+            result: [],
+            failed: {
+                failure_message: "The number of columns in A must match the number of rows in B!"
+            }
+        }
+    }
+
     let c: Matrix = Array(GetMatrixRows(A)).fill(null).map(() => Array(GetMatrixColumns(B)).fill(0));
     for (let i = 0; i < GetMatrixRows(A); i++) {
         for (let j = 0; j < GetMatrixColumns(B); j++) {
@@ -53,10 +46,18 @@ export function MultiplyMatrices(A: Matrix, B: Matrix): Matrix {
             c[i][j] = temp;
         }
     }
-    return c;
+    return {
+        result: [{name: "Result", size: {rows: GetMatrixRows(c), cols: GetMatrixColumns(c)}, matrix: c}]
+    };
 }
 
-export function AddMatrices(A: Matrix, B: Matrix): Matrix {
+export function AddMatrices(A: Matrix, B: Matrix): MatrixOutputData {
+    if ((GetMatrixColumns(A) != GetMatrixColumns(B)) || (GetMatrixRows(A) != GetMatrixRows(B))) {
+        return {
+            result: [],
+            failed: {failure_message: "The dimensions of A must match the dimensions of B!"}
+        };
+    } // If the dimensions do not match
     const rows = GetMatrixRows(A);
     const cols = GetMatrixColumns(A);
     let c: Matrix = Array(rows).fill(null).map(()=> Array(cols).fill(0));
@@ -65,10 +66,16 @@ export function AddMatrices(A: Matrix, B: Matrix): Matrix {
             c[i][j] = A[i][j] + B[i][j];
         }
     }
-    return c;
+    return {result: [{name: "Result", size: {rows: rows, cols: cols}, matrix: c}]};
 }
 
-export function SubtractMatrices(A: Matrix, B: Matrix): Matrix {
+export function SubtractMatrices(A: Matrix, B: Matrix): MatrixOutputData {
+    if ((GetMatrixColumns(A) != GetMatrixColumns(B)) || (GetMatrixRows(A) != GetMatrixRows(B))) {
+        return {
+            result: [],
+            failed: {failure_message: "The dimensions of A must match the dimensions of B!"}
+        };
+    } // If the dimensions do not match
     const rows = GetMatrixRows(A);
     const cols = GetMatrixColumns(A);
     let c: Matrix = Array(rows).fill(null).map(()=> Array(cols).fill(0));
@@ -77,7 +84,7 @@ export function SubtractMatrices(A: Matrix, B: Matrix): Matrix {
             c[i][j] = A[i][j] - B[i][j];
         }
     }
-    return c;
+    return {result: [{name: "Result", size: {rows: rows, cols: cols}, matrix: c}]};
 }
 
 
@@ -88,9 +95,9 @@ export function SubtractMatrices(A: Matrix, B: Matrix): Matrix {
  * 
  * @returns A clone of the provided matrix in REF
  */
-export function GaussianElimination(matrix: Matrix): GaussElimData {
+export function GaussianElimination(matrix: Matrix): MatrixOutputData {
     let result = matrix.map(row => [...row]); // This is done so React will trigger a re-render because this is technically a new variable.
-    let elimination_steps: Matrix[] = [];
+    let elimination_steps: MatrixData[] = [];
     const columns = GetMatrixColumns(result);
     const rows = GetMatrixRows(result);
     
@@ -109,8 +116,15 @@ export function GaussianElimination(matrix: Matrix): GaussElimData {
         // If the zero pivot cannot be resolved, elimination fails
         if (noZeroPivots != true) {
             return {
-                result_matrix: result,
-                failed: true
+                result: [{
+                    name: "",
+                    size: {rows: rows, cols: columns},
+                    matrix: result
+                }],
+                failed: {
+                    failure_message: "Gaussian Elimination failed!"
+                },
+                steps: elimination_steps
             };
         }
         // Multiplier = entry to eliminate in row i / pivot in row n
@@ -120,25 +134,22 @@ export function GaussianElimination(matrix: Matrix): GaussElimData {
             //In the pivot-th elimination matrix, place the multiplier in the [i, pivot] spot
             elimination_matrix[i][pivot] = -(result[i][pivot] / result[pivot][pivot]);
         }
-        console.log(elimination_matrix);
-        result = MultiplyMatrices(elimination_matrix, result); // Multiply our current matrix by the elimination matrix
-        elimination_steps.push(result.map(row => [...row]));
-        console.log(elimination_steps);
+        result = MultiplyMatrices(elimination_matrix, result).result[0].matrix; // Multiply our current matrix by the elimination matrix
+        elimination_steps.push({name: `Gaussian Elimination Step ${pivot+1}`, size: {rows: rows, cols: columns}, matrix: result.map(row => [...row])});
     }
-
-    return {result_matrix: result, failed: false, elimination_steps: elimination_steps};
+    elimination_steps.push({name: "Result", size: {rows: rows, cols: columns}, matrix: result})
+    return {result: [{name: "Result", size: {rows: rows, cols: columns}, matrix: result}], steps: elimination_steps};
 }
 
-export function GaussJordanElimination(matrix: Matrix): GaussJordanData {
+export function GaussJordanElimination(matrix: Matrix): MatrixOutputData {
     // Step 1, perform Gaussian Elimination
-    let ref_form = GaussianElimination(matrix);
-    if (ref_form.failed) { // If Gaussian elimination failed, return the matrix up to the point of failure
-        return {
-            ref_form: ref_form.result_matrix,
-            failed: ref_form.failed
-        };
+    let gaussian = GaussianElimination(matrix);
+    if (gaussian.failed) { // If Gaussian elimination failed, return the matrix up to the point of failure
+        return gaussian;
     }
-    let normalized_form = ref_form.result_matrix.map(row => [...row]);
+    let ref_form = gaussian.result[0].matrix;
+
+    let normalized_form = ref_form.map(row => [...row]);
     const normalRows = GetMatrixRows(normalized_form);
     const normalCols = GetMatrixColumns(normalized_form);
     const numberOfPivots = Math.min(normalRows, normalCols);
@@ -167,14 +178,16 @@ export function GaussJordanElimination(matrix: Matrix): GaussJordanData {
         }
     }
     return {
-        ref_form: ref_form.result_matrix,
-        normalized_form: normalized_form,
-        result: result,
-        failed: ref_form.failed,
+        result: [{name: "Result", size: {rows: normalRows, cols: normalCols}, matrix: result}],
+        steps: [
+            {name: "REF Form", size: {rows: normalRows, cols: normalCols},matrix: ref_form},
+            {name: "Normalized Form", size: {rows: normalRows, cols: normalCols},matrix: normalized_form},
+            {name: "Result", size: {rows: normalRows, cols: normalCols},matrix: result}
+        ]
     }
 }
 
-export function InvertMatrix(matrix: Matrix): InverseData {
+export function InvertMatrix(matrix: Matrix): MatrixOutputData {
     // Step 1: Create a block matrix with the input matrix and an Identity Matrix [M I]
     let block = CreateBlockMatrix(matrix, CreateIdentity(GetMatrixRows(matrix)));
 
@@ -183,14 +196,11 @@ export function InvertMatrix(matrix: Matrix): InverseData {
 
     // Now, the eliminated matrix should be a block matrix with the identity on the left and the inverted matrix on the right
     // Step 3: Extract inverted matrix
-    if (!elimination.result) { // Elimination failed
-        return {
-            block_matrix: block,
-            gauss_jordan_form: elimination.ref_form,
-            failed: true
-        };
+    if (elimination.failed) { // Elimination failed
+        elimination.failed.failure_message = "Matrix Inversion failed!" + elimination.failed.failure_message;
+        return elimination;
     }
-    let GJ_Form = elimination.result;
+    let GJ_Form = elimination.result[0].matrix;
     const size = GetMatrixRows(GJ_Form); // Because we're dealing with square matrices, the number of columns in the inverted matrix is equal to the number of rows in the block matrix
     let inverted: Matrix = Array(size).fill(null).map(()=> Array(size).fill(0));
     for (let i = 0; i < size; i++) {
@@ -199,13 +209,11 @@ export function InvertMatrix(matrix: Matrix): InverseData {
         }
     }
     return {
-        block_matrix: block,
-        gauss_jordan_form: GJ_Form,
-        result: inverted,
-        failed: false
+        result: [{name: "Result", size: {rows: size, cols: size}, matrix: inverted}],
+        steps: [
+            {name: "Step 1: Create block matrix with A and Identity matrix", size: {rows: size, cols: GetMatrixColumns(block)}, matrix: block},
+            {name: "Step 2: Perform Gauss-Jordan Elimination on block matrix", size: {rows: size, cols: GetMatrixColumns(block)}, matrix:GJ_Form},
+            {name: "Step 3: Extract inverted matrix from right side of block matrix", size: {rows: size, cols: size}, matrix: inverted}
+        ]
     };
-}
-
-export function GramSchmidt(matrix: Matrix) {
-    return 1;
 }
