@@ -1,47 +1,133 @@
 /*A custom type that represents a 2D array*/
 export type Matrix = number[][];
 export type StringMatrix = string[][];
+export type Vector = number[];
 
-export class MatrixDataObj {
-    name: string;
-    rows: number = 2;
-    cols: number = 2;
-    errorMessage?: string;
-    matrix: number[][] = [[0,0], [0,0]];
+export class MatrixMethods {
+    constructor() {}
 
-    constructor(name: string, matrix: Matrix);
-    constructor(name: string, rows: number, columns: number);
-
-    constructor(name: string, arg1: number[][] | number, arg2?: number) {
-        this.name = name;
-        if (isMatrix(arg1)) { // If a matrix is given as input
-            if (VerifyMatrixForm(arg1 as Matrix)) {
-                this.matrix = arg1;
-                this.rows = arg1.length;
-                this.cols = arg1[0].length;
+    public from_array(input: any[][]): Matrix | string {
+        let matrix: Matrix;
+        if (isMatrix(input)) {
+            matrix = input as Matrix;
+            if (VerifyMatrixForm(matrix)) {
+                return matrix;
             }
             else {
-                this.errorMessage = "Invalid matrix creation (input has inconsistent row lengths)."
+                return "Inconsistent row lengths"
             }
         }
-        else if (arg2) { // If row and column sizes are given as input
-            this.rows = arg1;
-            this.cols = arg2;
-            this.matrix = Array(arg1).fill(null).map(()=> Array(arg2).fill(0));
-        }
         else {
-            this.errorMessage = "Invalid matrix creation (only row length was provided).";
+            return "Inconsistent/Invalid data types across cells."
+        }
+        
+    }
+    
+    public copy(matrix: Matrix): Matrix  {
+        return matrix.slice(0);
+    }
+    
+    public transpose(matrix: Matrix): Matrix {
+        const rows = GetMatrixRows(matrix);
+        const cols = GetMatrixColumns(matrix);
+        let result = Array(cols).fill(null).map(()=>Array(rows).fill(0));
+        for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            result[j][i] = self[i][j];
         }
     }
+    return result;
+    }
 
+    public is_square(matrix: Matrix): boolean {
+        return (GetMatrixColumns(matrix) == GetMatrixRows(matrix));
+    }
+
+    public is_empty(matrix: Matrix): boolean {
+        for (let i = 0; i < GetMatrixRows(matrix); i++) {
+            for (let j = 0; j < GetMatrixColumns(matrix); j++) {
+                if (matrix[i][j] != 0) { return false; }
+            }
+        }
+        return true;
+    }
+
+    public matrix_to_vectors(matrix: Matrix): Vector[] {
+        let vectors: Vector[] = [];
+        for (let col = 0; col < GetMatrixColumns(matrix); col++) {
+            let vec: Vector = [];
+            for (let row = 0; row < GetMatrixRows(matrix); row++) {
+                vec.push(matrix[row][col])
+            }
+            vectors.push(vec);
+        }
+        return vectors;
+    }
     
 }
 
-function isMatrix(input: any): input is Matrix {
+export class VectorMethods {
+
+    constructor() {}
+
+    public copy(vector: Vector): Vector {
+        return vector.slice(0);
+    }
+
+    public to_matrix(vector: Vector): Matrix {
+        let matrix: Matrix = [];
+        for (let i = 0; i < vector.length; i++) {
+            matrix.push([vector[i]])
+        }
+        return matrix;
+    }
+
+    public vectors_to_matrix(vectors: Vector[]): Matrix {
+        // Verify all vectors are the same length
+        const vector_length = vectors[0].length;
+        for (let i = 0; i < vectors.length; i++) {
+            if (vectors[i].length != vector_length) { return [];}
+        }
+
+        let matrix: Matrix = this.to_matrix(vectors[0]);
+        if (vectors.length == 1) {return matrix;}
+        else {
+            for (let col = 1; col < vectors.length; col++) {
+                AddColumn(matrix, vectors[col]);
+            }
+            return matrix;
+        }
+    }
+
+    public magnitude(vector: Vector): number {
+        let mag = 0;
+        for (let i = 0; i < vector.length; i++) {
+            mag += Math.abs(vector[i]) ** 2;
+        }
+        return Math.sqrt(mag);
+    }
+
+    public transpose(vector: Vector): Matrix {
+        const mMethods = new MatrixMethods();
+        return mMethods.transpose(this.to_matrix(vector));
+    }
+
+    public normalize(vector: Vector): Vector {
+        const mag = this.magnitude(vector);
+        let result = this.copy(vector);
+        for (let i = 0; i < vector.length; i++) {
+            result[i] = result[i] / mag;
+        }
+        return result;
+    }
+}
+
+function isMatrix(input: any, type: "number" | "string" = "number"): input is Matrix {
     return (Array.isArray(input) && 
             input.every(row => Array.isArray(row)
-                && row.every(cell => typeof cell === "number")))
+                && row.every(cell => typeof cell === type)))
 }
+
 
 export function VerifyMatrixForm(matrix: Matrix): boolean {
     // Returns false if matrix is empty
@@ -153,10 +239,11 @@ export function RemoveRow(matrix: Matrix): Matrix {
  * 
  * @returns A clone of the provided matrix with an added column 
  **/
-export function AddColumn(matrix: Matrix): Matrix {
+export function AddColumn(matrix: Matrix, column?: number[]): Matrix {
     let temp: Matrix = [];
     for (let i = 0; i < GetMatrixRows(matrix); i++) {
-        temp[i] = [...matrix[i], 0]; // Adds an element to the end of every row
+        let new_cell = column ? column[i] : 0;
+        temp[i] = [...matrix[i], new_cell]; // Adds an element to the end of every row
     }
     return temp;
 }

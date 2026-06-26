@@ -14,7 +14,7 @@ const colorStyles: Record<ButtonProps["color"], string> = {
     gray: "bg-gray-500 hover:bg-gray-600 active:bg-gray-700",
     gray_light: "bg-gray-300 hover:bg-gray-400 active:bg-gray-500",
     black: "bg-black text-white active:bg-gray-800",
-    orange: "bg-orange-500 hover:bg-orange-600 active:bg-orange-700"
+    orange: "bg-orange-500 hover:bg-orange-600 active:bg-orange-700 px-3 py-2"
 };
 
 export default function Button({color, onClick, name, additional_styling}: ButtonProps) {
