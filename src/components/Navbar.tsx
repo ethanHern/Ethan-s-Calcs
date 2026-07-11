@@ -37,6 +37,7 @@ export default function Navbar() {
                         <LinkBox description={"Multiply two matrices"} link={'/matrix-calculator/multiplication'} name="Multiplication" />
                         <LinkBox description={"Perform Gaussian or Gauss-Jordan Elimination on a matrix"} link={'/matrix-calculator/elimination'} name="Elimination" />
                         <LinkBox description={"Invert a matrix"} link={'/matrix-calculator/inverse'} name="Inverse" />
+                        <LinkBox description={"Do QR Factorization"} link={'/matrix-calculator/qr_factorization'} name="QR Factorization" />
                     </div>
                 )}
             </div>

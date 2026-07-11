@@ -1,4 +1,4 @@
-import { CreateBlockMatrix, CreateIdentity, GetMatrixColumns, GetMatrixRows, SwapRows, type Matrix } from "./matrix";
+import { CreateBlockMatrix, CreateIdentity, GetMatrixColumns, GetMatrixRows, MatrixMethods, SwapRows, VectorMethods, type Matrix, type Vector } from "./matrix";
 
 export type MatrixData = {
     name: string,
@@ -11,12 +11,16 @@ export type MatrixData = {
 
 export type MatrixOutputData = {
     result: MatrixData[],
+    show_result_name?: boolean,
     failed?: {
         failure_message: string
     },
     steps?: MatrixData[]
 
 }
+
+const mMethods = new MatrixMethods();
+const vMethods = new VectorMethods();
 
 /**
  * Takes in two matrices and performs standard matrix multiplication.
@@ -216,4 +220,37 @@ export function InvertMatrix(matrix: Matrix): MatrixOutputData {
             {name: "Step 3: Extract inverted matrix from right side of block matrix", size: {rows: size, cols: size}, matrix: inverted}
         ]
     };
+}
+
+export function GramSchmidt(matrix: Matrix): MatrixOutputData {
+    const a = mMethods.matrix_to_vectors(matrix);
+    const shape = {rows: GetMatrixRows(matrix), cols: GetMatrixColumns(matrix)};
+    let v: Vector[] = mMethods.matrix_to_vectors(Array(shape.rows).fill(null).map(()=> Array(shape.cols).fill(0)) as Matrix);
+    let Q: Vector[] = mMethods.matrix_to_vectors(Array(shape.rows).fill(null).map(()=> Array(shape.cols).fill(0)) as Matrix);
+    v[0] = a[0];
+    for (let i = 1; i < shape.cols; i++) {
+        Q[i-1] = vMethods.normalize(v[i-1]);
+        v[i] = a[i];
+        for (let j = 0; j < i; j++) { // v[i] -= (Q[j] * Q[j].T) * A[i]
+            v[i] = vMethods.subtract(
+                v[i],
+                mMethods.matrix_to_vectors(MultiplyMatrices(
+                    MultiplyMatrices(vMethods.to_matrix(Q[j]), vMethods.transpose(Q[j])).result[0].matrix,
+                    vMethods.to_matrix(a[i])
+                    ).result[0].matrix
+                )[0]
+            )
+        }
+    }
+    Q[shape.cols - 1] = vMethods.normalize(v[shape.cols-1]);
+    const QMatrix = vMethods.vectors_to_matrix(Q);
+    let R = MultiplyMatrices(mMethods.transpose(QMatrix), matrix).result[0].matrix;
+
+    return {
+        result: [
+            { name: "Q", size: {rows: GetMatrixRows(QMatrix), cols: GetMatrixColumns(QMatrix)}, matrix: QMatrix},
+            { name: "R", size: {rows: GetMatrixRows(R), cols: GetMatrixColumns(R)}, matrix: mMethods.filter_tiny_numbers(R)}
+        ],
+        show_result_name: true
+    }
 }

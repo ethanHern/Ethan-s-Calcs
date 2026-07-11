@@ -22,6 +22,14 @@ export class MatrixMethods {
         }
         
     }
+
+    public rows(matrix: Matrix) {
+        return (matrix.length);
+    }
+
+    public cols(matrix: Matrix) {
+        return (matrix[0].length);
+    }
     
     public copy(matrix: Matrix): Matrix  {
         return matrix.slice(0);
@@ -32,10 +40,10 @@ export class MatrixMethods {
         const cols = GetMatrixColumns(matrix);
         let result = Array(cols).fill(null).map(()=>Array(rows).fill(0));
         for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-            result[j][i] = self[i][j];
+            for (let j = 0; j < cols; j++) {
+                result[j][i] = matrix[i][j];
+            }
         }
-    }
     return result;
     }
 
@@ -63,6 +71,17 @@ export class MatrixMethods {
         }
         return vectors;
     }
+
+    public filter_tiny_numbers(matrix: Matrix): Matrix {
+        const tolerance = 1e-14;
+        let result = this.copy(matrix);
+        for (let i = 0; i < this.rows(matrix); i++) {
+            for (let j = 0; j < this.cols(matrix); j++) {
+                if (result[i][j] < tolerance) {result[i][j] = 0}
+            }
+        }
+        return result;
+    }
     
 }
 
@@ -82,6 +101,7 @@ export class VectorMethods {
         return matrix;
     }
 
+
     public vectors_to_matrix(vectors: Vector[]): Matrix {
         // Verify all vectors are the same length
         const vector_length = vectors[0].length;
@@ -93,10 +113,18 @@ export class VectorMethods {
         if (vectors.length == 1) {return matrix;}
         else {
             for (let col = 1; col < vectors.length; col++) {
-                AddColumn(matrix, vectors[col]);
+                matrix = AddColumn(matrix, vectors[col]);
             }
             return matrix;
         }
+    }
+
+    public subtract(vec1: Vector, vec2: Vector): Vector {
+        let result = this.copy(vec1);
+        for (let i = 0; i < result.length; i++) {
+            result[i] -= vec2[i];
+        }
+        return result;
     }
 
     public magnitude(vector: Vector): number {
@@ -242,7 +270,7 @@ export function RemoveRow(matrix: Matrix): Matrix {
 export function AddColumn(matrix: Matrix, column?: number[]): Matrix {
     let temp: Matrix = [];
     for (let i = 0; i < GetMatrixRows(matrix); i++) {
-        let new_cell = column ? column[i] : 0;
+        let new_cell: number = column ? column[i] : 0;
         temp[i] = [...matrix[i], new_cell]; // Adds an element to the end of every row
     }
     return temp;
@@ -272,7 +300,6 @@ export function StringToNum(matrix: StringMatrix): Matrix {
     let outputMatrix: Matrix = Array(rows).fill(null).map(()=> Array(cols).fill(0));
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            console.log(matrix[i][j])
             let convertedValue = Number(matrix[i][j].replace('/\r/g', ''));
             outputMatrix[i][j] = convertedValue;
         }

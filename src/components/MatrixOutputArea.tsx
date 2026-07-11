@@ -23,7 +23,7 @@ export default function MatrixOutputArea({output_data}: outputProps) {
             {/*Display the final result*/}
             <div className="flex flex-row">
                 {output_data.result.map((result)=>(
-                <OutputBox key={result.name} rows={result.size!.rows} columns={result.size!.cols} output={result.matrix} showName={false} matrixName={result.name}/>
+                <OutputBox key={result.name} rows={result.size!.rows} columns={result.size!.cols} output={result.matrix} showName={output_data.show_result_name ? output_data.show_result_name : false} matrixName={result.name}/>
             ))}
             </div>
 

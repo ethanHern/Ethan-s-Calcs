@@ -7,6 +7,7 @@ import Multiplication from "./matrix-calculator/multiplication";
 import MatrixHome from "./matrix-home";
 import Elimination from "./matrix-calculator/elimination";
 import Inverse from "./matrix-calculator/inverse";
+import QRFactorization from "./matrix-calculator/qr_factorization";
 
 export default function App() {
 
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/matrix-calculator/multiplication" element={<Multiplication/>}/>
           <Route path="/matrix-calculator/elimination" element={<Elimination/>}/>
           <Route path="/matrix-calculator/inverse" element={<Inverse/>}/>
+          <Route path="/matrix-calculator/qr_factorization" element={<QRFactorization/>}/>
         </Routes>
       </BrowserRouter>
     </>
